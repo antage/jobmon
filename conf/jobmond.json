@@ -1,0 +1,24 @@
+{
+    "web": {
+        "listen": "127.0.0.1",
+        "port": 8080
+    },
+    "rpc": {
+        "listen": "127.0.0.1",
+        "port": 10432,
+        "allow": ["127.0.0.0/8"]
+    },
+    "mail": {
+        "smtp": {
+            "host": "127.0.0.1",
+            "port": 25
+        },
+        "message": {
+            "from": "no-reply@localhost",
+            "subject": "[JOBMOND] Failed job notification"
+        },
+        "notify": [
+            "root"
+        ]
+    }
+}

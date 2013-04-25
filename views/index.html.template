@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>JobMon status</title>
+        <link href="/assets/bootstrap.css" rel="stylesheet" type="text/css" media="screen" />
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="span12">
+                    <h1>JobMon status</h1>
+                    {{if .Jobs}}
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Job name</th>
+                                    <th>Hostname</th>
+                                    <th>Username</th>
+                                    <th>Last run</th>
+                                    <th>Duration</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{range $jobId, $logEntry := .Jobs}}
+                                    <tr class="{{if $logEntry.Success}}{{if $logEntry.Processing}}{{else}}success{{end}}{{else}}error{{end}}">
+                                        <td>{{$jobId.Name}}</td>
+                                        <td>{{$jobId.Hostname}}</td>
+                                        <td>{{$jobId.Username}}</td>
+                                        <td>{{$logEntry.StartedAt}}</td>
+                                        <td>
+                                            {{if $logEntry.Processing}}
+                                                <img src="/assets/progress.gif" />
+                                            {{else}}
+                                                {{$logEntry.Duration}}
+                                            {{end}}
+                                        </td>
+                                        <td>
+                                            {{if $logEntry.Success}}
+                                                {{if $logEntry.Processing}}
+                                                {{else}}
+                                                    <a href="/logs/{{$logEntry.Id}}">SUCCESS</a>
+                                                {{end}}
+                                            {{else}}
+                                                <a href="/logs/{{$logEntry.Id}}">FAILED</a>
+                                            {{end}}
+                                        </td>
+                                    </tr>
+                                {{end}}
+                            </tbody>
+                        </table>
+                    {{else}}
+                        <p>No jobs.</p>
+                    {{end}}
+                </div>
+            </div>
+        </div>
+        <script src="/assets/jquery.min.js" type="text/javascript"></script>
+        <script src="/assets/bootstrap.min.js" type="text/javascript"></script>
+    </body>
+</html>
