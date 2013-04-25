@@ -1,0 +1,2 @@
+bin/jobmon          usr/bin
+conf/jobmon.json    etc/jobmon

@@ -1,0 +1,8 @@
+bin/jobmond                                             usr/bin
+conf/jobmond.json                                       etc/jobmon
+views/*                                                 usr/share/jobmond/views
+assets/robots.txt                                       usr/share/jobmond/assets
+assets/progress.gif                                     usr/share/jobmond/assets
+components/jquery/jquery.min.js                         usr/share/jobmond/assets
+components/bootstrap/docs/assets/css/bootstrap.css      usr/share/jobmond/assets
+components/bootstrap/docs/assets/js/bootstrap.min.js    usr/share/jobmond/assets

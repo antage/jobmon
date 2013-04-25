@@ -1,0 +1,23 @@
+Source: jobmon
+Section: misc
+Priority: extra
+Maintainer: Anton Ageev <antage@gmail.com>
+Build-Depends: debhelper (>= 8.0.0), make (>= 3.81), golang-go (>= 1.0.2)
+Standards-Version: 3.9.3
+Homepage: https://github.com/antage/jobmon
+Vcs-Git: git://github.com/antage/jobmon.git
+Vcs-Browser: https://github.com/antage/jobmon
+
+Package: jobmon
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: External job monitoring (client)
+ Monitoring executions of externally-run jobs, such as cron jobs and
+ procmail jobs, even those that are run on a remote machine.
+
+Package: jobmond
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, adduser
+Description: External job monitoring (server)
+ Monitoring executions of externally-run jobs, such as cron jobs and
+ procmail jobs, even those that are run on a remote machine.
