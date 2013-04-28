@@ -22,7 +22,7 @@ type rpcConfig struct {
 	Listen     string
 	Port       uint
 	Allow      []string
-	AllowIPNet []*net.IPNet
+	allowIPNet []*net.IPNet
 }
 
 type smtpConfig struct {
@@ -65,7 +65,7 @@ func defaultConfig() *mainConfig {
 			Listen:     "127.0.0.1",
 			Port:       10432,
 			Allow:      []string{"127.0.0.0/8"},
-			AllowIPNet: []*net.IPNet{},
+			allowIPNet: nil,
 		},
 		Mail: mailConfig{
 			SMTP: smtpConfig{
@@ -79,13 +79,15 @@ func defaultConfig() *mainConfig {
 			Notify: []string{"root"},
 		},
 	}
+
+	c.RPC.allowIPNet = make([]*net.IPNet, 0, len(c.RPC.Allow))
 	for _, allow := range c.RPC.Allow {
 		_, ipnet, err := net.ParseCIDR(allow)
 		if err != nil {
 			logger.Error("can't parse allow CIDR (%s) in default configuration: %s", err.Error())
 			continue
 		}
-		c.RPC.AllowIPNet = append(c.RPC.AllowIPNet, ipnet)
+		c.RPC.allowIPNet = append(c.RPC.allowIPNet, ipnet)
 	}
 
 	return c
@@ -104,6 +106,16 @@ func parseConfigFile(filename string) error {
 	if err != nil && err != io.EOF {
 		logger.Error("can't parse config file: %s", err.Error())
 		return err
+	}
+
+	config.RPC.allowIPNet = make([]*net.IPNet, 0, len(config.RPC.Allow))
+	for _, allow := range config.RPC.Allow {
+		_, ipnet, err := net.ParseCIDR(allow)
+		if err != nil {
+			logger.Error("can't parse allow CIDR (%s) in loaded configuration: %s", err.Error())
+			continue
+		}
+		config.RPC.allowIPNet = append(config.RPC.allowIPNet, ipnet)
 	}
 
 	return nil

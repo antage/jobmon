@@ -36,7 +36,7 @@ func runRpcServer(serverInstace *Server) error {
 			if c != nil {
 				if ipaddr, ok := c.RemoteAddr().(*net.TCPAddr); ok {
 					allowed := false
-					for _, allow := range config.RPC.AllowIPNet {
+					for _, allow := range config.RPC.allowIPNet {
 						if allow.Contains(ipaddr.IP) {
 							allowed = true
 							break
@@ -46,7 +46,7 @@ func runRpcServer(serverInstace *Server) error {
 					if allowed {
 						go rpcsrv.ServeConn(c)
 					} else {
-						logger.Error("can't accpet connection because remote address isn't allowed")
+						logger.Error("can't accept connection because remote address isn't allowed: %s", ipaddr.String())
 						err := c.Close()
 						if err != nil {
 							logger.Error("can't close connection to RPC: %s", err.Error())
