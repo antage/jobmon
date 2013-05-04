@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"encoding/json"
@@ -9,42 +9,38 @@ import (
 
 const CONF_DIR = "/etc/jobmon"
 
-type rpcConfig struct {
+type RPC struct {
 	Host string
 	Port uint
 }
 
-type mainConfig struct {
-	RPC rpcConfig
+type Main struct {
+	RPC RPC
 }
 
-var config *mainConfig
-
-func defaultConfig() *mainConfig {
-	c := &mainConfig{
-		RPC: rpcConfig{
+func Default() *Main {
+	return &Main{
+		RPC: RPC{
 			Host: "127.0.0.1",
 			Port: 10432,
 		},
 	}
-
-	return c
 }
 
-func parseConfigFile(filename string) error {
+func ParseFile(filename string) (*Main, error) {
 	configFile, err := os.Open(filename)
 	if err != nil {
 		logger.Error("can't open config file: %s", err.Error())
-		return err
+		return nil, err
 	}
 
 	decoder := json.NewDecoder(configFile)
-	config = defaultConfig()
+	config := Default()
 	err = decoder.Decode(config)
 	if err != nil && err != io.EOF {
 		logger.Error("can't parse config file: %s", err.Error())
-		return err
+		return nil, err
 	}
 
-	return nil
+	return config, nil
 }
