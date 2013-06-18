@@ -28,7 +28,6 @@ func Error(format string, a ...interface{}) {
 	err := logger.Err(fmt.Sprintf(format, a...))
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Can't send message to syslog")
-		os.Exit(3)
 	}
 }
 
@@ -36,6 +35,5 @@ func Info(format string, a ...interface{}) {
 	err := logger.Info(fmt.Sprintf(format, a...))
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Can't send message to syslog")
-		os.Exit(3)
 	}
 }
