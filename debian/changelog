@@ -1,3 +1,9 @@
+jobmon (3) unstable; urgency=low
+
+  * Don't exit if jobmon/jobmond can't send message to syslog
+
+ -- Anton Ageev <antage@gmail.com>  Wed, 19 Jun 2013 01:00:37 +0400
+
 jobmon (2) unstable; urgency=low
 
   * Fixed bug: parseConfigFile doesn't update .allowIPNet
