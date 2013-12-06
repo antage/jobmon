@@ -10,8 +10,8 @@ import (
 )
 
 const CONF_DIR = "/etc/jobmon"
+
 const ASSETS_DIR = "/usr/share/jobmond/assets"
-const VIEWS_DIR = "/usr/share/jobmond/views"
 
 type webConfig struct {
 	Listen string

@@ -18,11 +18,19 @@ func routes(server *Server) *mux.Router {
 	mux := mux.NewRouter()
 
 	// assets
-	mux.Handle("/favicon.ico", http.NotFoundHandler())
-	mux.Handle("/robots.txt", http.FileServer(http.Dir(ASSETS_DIR)))
 	mux.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir(ASSETS_DIR))))
 
-	mux.Handle("/logs/{id:[0-9]+}", ServerHandlerFunc{server: server, f: showLogPage})
-	mux.Handle("/", ServerHandlerFunc{server: server, f: indexPage})
+	mux.Handle("/favicon.ico", http.NotFoundHandler())
+	mux.Handle("/robots.txt", http.FileServer(http.Dir(ASSETS_DIR)))
+	mux.Handle("/jobs.html", http.FileServer(http.Dir(ASSETS_DIR)))
+
+	// app
+	mux.HandleFunc("/", appPage)
+	mux.HandleFunc("/logs/{id:[0-9]+}", appPage)
+
+	// json
+	mux.Handle("/logs/{id:[0-9]+}.json", ServerHandlerFunc{server: server, f: logEntryJson})
+	mux.Handle("/jobs.json", ServerHandlerFunc{server: server, f: jobsListJson})
+
 	return mux
 }

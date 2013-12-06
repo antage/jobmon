@@ -1,0 +1,18 @@
+<div class="page-header">
+	<h1>Log entry #{{log.Id}}</h1>
+</div>
+
+<dl>
+	<dt>Host</dt>
+	<dd>{{log.JobId.Hostname}}</dd>
+	<dt>User:</dt>
+	<dd>{{log.JobId.Username}}</dd>
+	<dt>Job:</dt>
+	<dd>{{log.JobId.Name}}</dd>
+	<dt>Success:</dt>
+	<dd>{{log.Success}}</dd>
+</dl>
+
+<p><a href="/">Back to status page</a></p>
+<pre>{{log.Output}}</pre>
+<p><a href="/">Back to status page</a></p>

@@ -1,0 +1,40 @@
+<div class="page-header">
+	<h1>JobMon status</h1>
+</div>
+<ng-if ng-if="jobs && jobs.length > 0">
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+				<th>Job name</th>
+				<th>Hostname</th>
+				<th>Username</th>
+				<th>Last run</th>
+				<th>Duration</th>
+				<th>Status</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="job in jobs" ng-class="{ success: job.Success && !job.Processing, danger: !job.Success }">
+				<td>{{job.JobId.Name}}</td>
+				<td>{{job.JobId.Hostname}}</td>
+				<td>{{job.JobId.Username}}</td>
+				<td>{{job.StartedAt}}</td>
+				<td>
+					<ng-if ng-if="job.Processing">
+						<img src="/assets/progress.gif"/>
+					</ng-if>
+					<ng-if ng-if="!job.Processing">
+						{{job.Duration}}
+					</ng-if>
+				</td>
+				<td>
+					<a ng-href="/logs/{{job.Id}}" ng-if="job.Success && !job.Processing">SUCCESS</a>
+					<a ng-href="/logs/{{job.Id}}" ng-if="!job.Success">FAILED</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</ng-if>
+<ng-if ng-if="!jobs || jobs.length == 0">
+	<p>No jobs.</p>
+</ng-if ng-if>
