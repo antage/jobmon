@@ -1,3 +1,9 @@
+jobmon (4) unstable; urgency=low
+
+  * New upstream version. 
+
+ -- Anton Ageev <antage@gmail.com>  Fri, 06 Dec 2013 23:43:16 +0400
+
 jobmon (3) unstable; urgency=low
 
   * Don't exit if jobmon/jobmond can't send message to syslog
