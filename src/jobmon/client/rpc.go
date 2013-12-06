@@ -11,13 +11,10 @@ import (
 )
 
 const CONN_TIMEOUT = 60 * time.Second
-const IDLE_TIMEOUT = 600 * time.Second
 
 type rpcClient struct {
 	*rpc.Client
-	configuration *config.Main
-	conn          net.Conn
-	closed        bool
+	conn net.Conn
 }
 
 func newFromConfig(c *config.Main) (*rpcClient, error) {
@@ -26,31 +23,32 @@ func newFromConfig(c *config.Main) (*rpcClient, error) {
 		logger.Error("can't resolve connect to server: %s", err.Error())
 		return nil, err
 	}
-	if tcpconn, ok := conn.(*net.TCPConn); ok {
-		tcpconn.SetKeepAlive(true)
-	}
 
-	return &rpcClient{rpc.NewClient(conn), c, conn, false}, nil
+	return &rpcClient{rpc.NewClient(conn), conn}, nil
 }
 
-func (cl *rpcClient) close() error {
-	if !cl.closed {
-		err := cl.Close()
-		if err != nil {
-			logger.Error("can't close RPC client: %s", err.Error())
-			return err
-		}
-		err = cl.conn.Close()
-		if err != nil {
-			logger.Error("can't close connection: %s", err.Error())
-			return err
-		}
-		cl.closed = true
+func (cl *rpcClient) close() {
+	err := cl.Close()
+	if err != nil {
+		logger.Error("can't close RPC client: %s", err.Error())
+		return
 	}
-	return nil
+	err = cl.conn.Close()
+	if err != nil {
+		logger.Error("can't close connection: %s", err.Error())
+		return
+	}
+	return
 }
 
-func (cl *rpcClient) startNotification(jobId job.JobId) (logId job.LogId, err error) {
+func rpcStartNotification(jobId job.JobId) (logId job.LogId, err error) {
+	cl, err := newFromConfig(configuration)
+	if err != nil {
+		logger.Error("can't create RPC client: %s", err.Error())
+		return job.LogId(0), err
+	}
+	defer cl.close()
+
 	arg := &job.StartNotification{
 		JobId:     &jobId,
 		StartedAt: time.Now(),
@@ -58,24 +56,27 @@ func (cl *rpcClient) startNotification(jobId job.JobId) (logId job.LogId, err er
 
 	cl.conn.SetDeadline(time.Now().Add(CONN_TIMEOUT))
 	err = cl.Call("Server.StartNotification", arg, &logId)
-	cl.conn.SetDeadline(time.Now().Add(IDLE_TIMEOUT))
-
 	if err != nil {
-		logger.Error("can't send StartNotification message: %s", err.Error())
 		return job.LogId(0), err
 	}
 
 	return logId, nil
 }
 
-func (cl *rpcClient) aliveNotification(logId job.LogId) {
+func rpcAliveNotification(logId job.LogId) {
+	cl, err := newFromConfig(configuration)
+	if err != nil {
+		logger.Error("can't create RPC client: %s", err.Error())
+		return
+	}
+	defer cl.close()
+
 	arg := &job.AliveNotification{LogId: logId}
 
 	var success bool
 
 	cl.conn.SetDeadline(time.Now().Add(CONN_TIMEOUT))
-	err := cl.Call("Server.AliveNotification", arg, &success)
-	cl.conn.SetDeadline(time.Now().Add(IDLE_TIMEOUT))
+	err = cl.Call("Server.AliveNotification", arg, &success)
 
 	if err != nil {
 		logger.Error("can't send AliveNotification message: %s", err.Error())
@@ -87,7 +88,14 @@ func (cl *rpcClient) aliveNotification(logId job.LogId) {
 	}
 }
 
-func (cl *rpcClient) completeNotification(logId job.LogId, completedAt time.Time, output []byte, cmd_success bool) {
+func rpcCompleteNotification(logId job.LogId, completedAt time.Time, output []byte, cmd_success bool) {
+	cl, err := newFromConfig(configuration)
+	if err != nil {
+		logger.Error("can't create RPC client: %s", err.Error())
+		return
+	}
+	defer cl.close()
+
 	arg := &job.CompleteNotification{
 		LogId:       logId,
 		CompletedAt: completedAt,
@@ -96,12 +104,12 @@ func (cl *rpcClient) completeNotification(logId job.LogId, completedAt time.Time
 	}
 	var success bool
 	cl.conn.SetDeadline(time.Now().Add(CONN_TIMEOUT))
-	err := cl.Call("Server.CompleteNotification", arg, &success)
-	cl.conn.SetDeadline(time.Now().Add(IDLE_TIMEOUT))
+	err = cl.Call("Server.CompleteNotification", arg, &success)
 	if err != nil {
 		logger.Error("can't send CompleteNotification message: %s", err.Error())
 		return
 	}
+
 	if !success {
 		logger.Error("server can't handle CompleteNotification: success is false")
 	}

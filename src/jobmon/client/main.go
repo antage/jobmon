@@ -73,22 +73,16 @@ func main() {
 		exit(1)
 	}
 
-	rpc, err := newFromConfig(configuration)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "can't create RPC client: %s\n", err.Error())
-	} else {
-		defer rpc.Close()
-	}
-
 	// notify jobmond the command started
 	var logId job.LogId
+	var serverAlive bool
 
-	if rpc != nil {
-		logId, err = rpc.startNotification(jobId)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "can't send StartNotification to RPC server: %s\n", err.Error())
-			rpc = nil
-		}
+	logId, err = rpcStartNotification(jobId)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "can't send StartNotification to RPC server: %s\n", err.Error())
+		serverAlive = false
+	} else {
+		serverAlive = true
 	}
 
 	cmd_complete_ch := make(chan error)
@@ -105,14 +99,14 @@ command_waiting:
 			break command_waiting
 		case <-time.After(1 * time.Minute):
 			// notify jobmond the command is alive
-			if rpc != nil {
-				rpc.aliveNotification(logId)
+			if serverAlive {
+				rpcAliveNotification(logId)
 			}
 		}
 	}
 
 	// notify jobmond the command complete and send exit code, stdout and stderr logs
-	if rpc != nil {
-		rpc.completeNotification(logId, time.Now(), output.Bytes(), cmd_err == nil)
+	if serverAlive {
+		rpcCompleteNotification(logId, time.Now(), output.Bytes(), cmd_err == nil)
 	}
 }
