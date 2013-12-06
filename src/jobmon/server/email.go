@@ -43,7 +43,10 @@ func sendNotification(server *Server, logEntry *job.LogEntry) {
 		data.WriteString(fmt.Sprintf("To: %s\n", recipient))
 		data.WriteString(fmt.Sprintf("Subject: %s\n", config.Mail.Message.Subject))
 		data.WriteString("\n")
-		data.WriteString(fmt.Sprintf("Log id=%d\n", logEntry.Id))
+		data.WriteString(fmt.Sprintf("Host: %s\n", logEntry.JobId.Hostname))
+		data.WriteString(fmt.Sprintf("Username: %s\n", logEntry.JobId.Username))
+		data.WriteString(fmt.Sprintf("Jobname: %s\n", logEntry.JobId.Name))
+		data.WriteString(fmt.Sprintf("Log ID: %d\n\n", logEntry.Id))
 		data.Write(logEntry.Output)
 		// fill data
 		if _, err = data.WriteTo(wc); err != nil {
