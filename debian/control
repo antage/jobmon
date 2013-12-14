@@ -2,7 +2,7 @@ Source: jobmon
 Section: misc
 Priority: extra
 Maintainer: Anton Ageev <antage@gmail.com>
-Build-Depends: debhelper (>= 8.0.0), make (>= 3.81), golang-go (>= 1.0.2)
+Build-Depends: quilt (>= 0.48), debhelper (>= 8.0.0), make (>= 3.81), golang-go (>= 1.0.2)
 Standards-Version: 3.9.3
 Homepage: https://github.com/antage/jobmon
 Vcs-Git: git://github.com/antage/jobmon.git

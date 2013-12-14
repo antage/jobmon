@@ -1,0 +1,13 @@
+Index: b/src/jobmon/server/config.go
+===================================================================
+--- a/src/jobmon/server/config.go
++++ b/src/jobmon/server/config.go
+@@ -9,7 +9,7 @@
+ 	"os"
+ )
+
+-const CONF_DIR = "./conf"
++const CONF_DIR = "/etc/jobmon"
+
+ const ASSETS_DIR = "./assets"
+

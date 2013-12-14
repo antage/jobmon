@@ -1,3 +1,7 @@
+# Ignore compiled binaries
 /pkg/
 /bin/jobmon
 /bin/jobmond
+
+# Ignore quilt files
+/.pc/

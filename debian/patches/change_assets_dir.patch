@@ -1,0 +1,11 @@
+--- a/src/jobmon/server/config.go
++++ b/src/jobmon/server/config.go
+@@ -11,7 +11,7 @@
+ 
+ const CONF_DIR = "/etc/jobmon"
+ 
+-const ASSETS_DIR = "./assets"
++const ASSETS_DIR = "/usr/share/jobmond/assets"
+ 
+ type webConfig struct {
+ 	Listen string
