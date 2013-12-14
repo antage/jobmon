@@ -10,6 +10,22 @@ import (
 	"strconv"
 )
 
+type jsonLogEntry struct {
+	Id      job.LogId
+	JobId   *job.JobId
+	Output  string
+	Success bool
+}
+
+func logEntryToJson(l *job.LogEntry) *jsonLogEntry {
+	return &jsonLogEntry{
+		Id:      l.Id,
+		JobId:   l.JobId,
+		Output:  string(l.Output),
+		Success: l.Success,
+	}
+}
+
 func logEntryJson(server *Server, resp http.ResponseWriter, req *http.Request) {
 	logger.Info("process http request '%s' from %s", req.RequestURI, req.RemoteAddr)
 	resp.Header().Set("Content-Type", "application/json; charset=utf-8")
@@ -36,7 +52,7 @@ func logEntryJson(server *Server, resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	output, err := json.Marshal(logEntry)
+	output, err := json.Marshal(logEntryToJson(logEntry))
 	if err != nil {
 		logger.Error("can't encode log entry (id=%d) in json: %s", logEntry.Id, err.Error())
 		http.Error(resp, fmt.Sprintf("{ error: \"%s\" }", err.Error()), http.StatusInternalServerError)
