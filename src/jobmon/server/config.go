@@ -9,9 +9,9 @@ import (
 	"os"
 )
 
-const CONF_DIR = "/etc/jobmon"
+const CONF_DIR = "./conf"
 
-const ASSETS_DIR = "/usr/share/jobmond/assets"
+const ASSETS_DIR = "./assets"
 
 type webConfig struct {
 	Listen string
