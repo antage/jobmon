@@ -34,12 +34,12 @@ func (l *Logs) NewLogEntry(jobIdPtr *JobId) (LogId, *LogEntry) {
 
 	logIds, ok := l.logIds[jobId]
 	if !ok {
-		logIds = make([]LogId, 0, 100)
+		logIds = make([]LogId, 0, 10)
 	}
 
-	if len(logIds) > 99 {
-		copy(logIds, logIds[(len(logIds)-99):])
-		logIds = logIds[0:99]
+	if len(logIds) > 9 {
+		copy(logIds, logIds[(len(logIds)-9):])
+		logIds = logIds[0:9]
 	}
 
 	l.logIds[jobId] = append(logIds, logId)
