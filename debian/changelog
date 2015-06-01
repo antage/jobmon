@@ -1,3 +1,9 @@
+jobmon (6.0-1) unstable; urgency=medium
+
+  * Make version in non-native package revision format.
+
+ -- Anton Ageev <antage@gmail.com>  Mon, 01 Jun 2015 17:44:24 +0300
+
 jobmon (6) unstable; urgency=low
 
   * Reduce log history to 10 entries instead of 100.
